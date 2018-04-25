@@ -1,0 +1,44 @@
+body {
+  @include body-font;
+  background-image: linear-gradient(-45deg, #e6e0ae, #dfbc5e);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @include heading-font;
+}
+
+.btn-xl {
+  text-transform: uppercase;
+  padding: 1.5rem 3rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1rem;
+}
+
+.bg-black {
+  background-color: $black !important;
+}
+
+.rounded-pill {
+  border-radius: 5rem;
+}
+
+.full-width-section {
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    color: $white;
+    padding: 3em;
+    .row {
+        min-height: 70vh;
+    }
+}
+
+#divider1 {
+    max-height: 40vh;
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% macro darken(percent) %}
+  linear-gradient(rgba(0, 0, 0, {{ percent }}), rgba(0, 0, 0, {{ percent }})),
+  {% endmacro %}
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{ general['head-title'] }}</title>
+    <link rel="shortcut icon" href="img/logo.svg" />
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/one-page-wonder.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">{{ general["navbar-title"] }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/en.html">EN</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/zh.html">中文</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <header class="masthead text-center text-white" style="background-image: {{ darken(0.2) }} url({{ global['background'] }})">
+      <div class="masthead-content">
+        <div class="container">
+          <img src="{{ global["logo"] }}" alt="">
+          <h1 class="masthead-heading mb-0">{{ general["title"] }}</h1>
+          <h2 class="masthead-subheading mb-0">{{ general["subtitle"] }}</h2>
+          <!-- <a href="#" class="btn btn-primary btn-xl rounded-pill mt-5">Learn More</a> -->
+        </div>
+      </div>
+    </header>
+    <div id="bubbles">
+      {% macro bubble_par(title, paragraph) %}
+      <div class="col-lg-6">
+        <div class="p-5">
+          <h2 class="display-4">{{ title }}</h2>
+          <p>{{ paragraph }}</p>
+        </div>
+      </div>
+      {% endmacro %}
+      {% macro bubble_img(img_url) %}
+      <div class="col-lg-6">
+        <div class="p-5">
+          <img class="img-fluid rounded-circle" src="{{ img_url }}" alt="">
+        </div>
+      </div>
+      {% endmacro %}
+      {% macro bubble(bub, left=False, id=None)  %}
+      <section>
+        <div class="container">
+          <div class="row align-items-center">
+            {# {{ bubble_par({{ bub.title }}, {{ bub.paragraph }}) }} #}
+            {% if left %}
+              {{ bubble_img(bub.image ) }}
+              {{ bubble_par(bub.title, bub.text) }}
+            {% else %}
+              {{ bubble_par(bub.title, bub.text) }}
+              {{ bubble_img(bub.image) }}
+            {% endif %}
+          </div>
+        </div>
+      </section>
+      {% endmacro %}
+      {% macro full_width_section(id, title, text, background, shades="") %}
+      <section id="{{ id }}" class="full-width-section container-fluid" style="background-image: {{ shades }} url({{ background }})">
+        <div class="row align-items-center">
+          <div class="col text-center">
+            <h1>{{ title }}</h1>
+            <div class=container> 
+              <p>{{ text }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endmacro %}
+
+      {% for sec in sections %}
+        {% if sections[sec].theme == 'bubble' %}
+          {{ bubble(sections[sec]) }}
+        {% elif sections[sec].theme == 'bubble-r' %}
+          {{ bubble(sections[sec], left=1) }}
+        {% elif sections[sec].theme == 'video' %}
+        <section class="mb-5 mt-4">
+          <div class="row">
+            <div class="col text-center">
+              <div class="container w-75">
+                <h1 class="display-4 mb-4">{{ sections[sec].title }}</h1>
+                <div class="embed-responsive embed-responsive-16by9">
+                  <!-- <video id="video" controls class="embed-responsive-item" src="{{ sections[sec].video }}" type="video/mp4"></video> -->
+                  <video controls id="video"></video>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="container">
+                {{ sections[sec].text }}
+              </div>
+            </div>
+          </div>
+        </section>
+        {% else %}
+          {% if sections[sec].shade %}
+            {{ full_width_section(sec, sections[sec].title, sections[sec].text, sections[sec].image, darken(sections[sec].shade)) }} 
+          {% else %}
+            {{ full_width_section(sec, sections[sec].title, sections[sec].text, sections[sec].image) }}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-black">
+      <div class="container">
+        <p class="m-0 text-center text-white small">{{ general.copyright }}</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    var video = document.getElementById('video');
+if(Hls.isSupported()) {
+  var hls = new Hls();
+  hls.loadSource('/img/documentary.m3u8');
+  hls.attachMedia(video);
+}
+// hls.js is not supported on platforms that do not have Media Source Extensions (MSE) enabled.
+// When the browser has built-in HLS support (check using `canPlayType`), we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video element throught the `src` property.
+// This is using the built-in support of the plain video element, without using hls.js.
+else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  video.src = '/img/documentary.m3u8';
+}
+  </script>
+
+  </body>
+
+</html>
